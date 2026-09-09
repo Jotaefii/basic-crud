@@ -1,6 +1,6 @@
 package com.crud.service;
 
-import com.crud.entities.Employee;
+import com.crud.database.entities.Employee;
 
 import java.util.List;
 

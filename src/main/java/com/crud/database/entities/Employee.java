@@ -1,14 +1,28 @@
-package com.crud.entities;
+package com.crud.database.entities;
+
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "employees")
 public class Employee {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(precision = 10, scale = 2)
     private BigDecimal salary;
 
+    @ManyToOne
+    @JoinColumn(name = "department_id")
     private Department department;
 
     public Employee() {

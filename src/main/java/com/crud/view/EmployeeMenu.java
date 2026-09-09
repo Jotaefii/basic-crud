@@ -1,7 +1,7 @@
 package com.crud.view;
 
-import com.crud.entities.Department;
-import com.crud.entities.Employee;
+import com.crud.database.entities.Department;
+import com.crud.database.entities.Employee;
 import com.crud.service.EmployeeService;
 
 import java.math.BigDecimal;
