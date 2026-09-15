@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Department {
 
     @Id
@@ -19,8 +20,6 @@ public class Department {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String nome;
+    private String name;
 
-    @OneToMany(mappedBy = "department")
-    private List<Employee> employees = new ArrayList<>();
 }

@@ -1,8 +1,8 @@
 package com.jotaefi.crud.service;
 
-import com.jotaefi.crud.dto.EmployeeCreateDTO;
-import com.jotaefi.crud.dto.EmployeeResponseDTO;
-import com.jotaefi.crud.dto.EmployeeUpdateDTO;
+import com.jotaefi.crud.dto.request.EmployeeCreateDTO;
+import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
+import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
 import com.jotaefi.crud.entity.Department;
 import com.jotaefi.crud.entity.Employee;
 import com.jotaefi.crud.exception.BadRequestException;
@@ -48,7 +48,7 @@ public class EmployeeService {
                 .name(salvo.getName())
                 .email(salvo.getEmail())
                 .salary(salvo.getSalary())
-                .departmentName(salvo.getDepartment().getNome())
+                .departmentName(salvo.getDepartment().getName())
                 .build();
     }
 
@@ -59,7 +59,7 @@ public class EmployeeService {
                         .name(e.getName())
                         .email(e.getEmail())
                         .salary(e.getSalary())
-                        .departmentName(e.getDepartment().getNome())
+                        .departmentName(e.getDepartment().getName())
                         .build()
                 )
                 .toList();
@@ -74,7 +74,7 @@ public class EmployeeService {
                 .name(employee.getName())
                 .email(employee.getEmail())
                 .salary(employee.getSalary())
-                .departmentName(employee.getDepartment().getNome())
+                .departmentName(employee.getDepartment().getName())
                 .build();
     }
 
@@ -88,7 +88,7 @@ public class EmployeeService {
                         e.getName(),
                         e.getEmail(),
                         e.getSalary(),
-                        e.getDepartment().getNome()
+                        e.getDepartment().getName()
                 ))
                 .toList();
 
@@ -118,7 +118,7 @@ public class EmployeeService {
                 .name(employee.getName())
                 .email(employee.getEmail())
                 .salary(employee.getSalary())
-                .departmentName(employee.getDepartment().getNome())
+                .departmentName(employee.getDepartment().getName())
                 .build();
 
     }

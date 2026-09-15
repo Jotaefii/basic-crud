@@ -1,4 +1,4 @@
-package com.jotaefi.crud.dto;
+package com.jotaefi.crud.dto.response;
 
 import lombok.Builder;
 

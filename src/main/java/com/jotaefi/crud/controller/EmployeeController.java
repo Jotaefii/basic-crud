@@ -1,8 +1,8 @@
 package com.jotaefi.crud.controller;
 
-import com.jotaefi.crud.dto.EmployeeCreateDTO;
-import com.jotaefi.crud.dto.EmployeeResponseDTO;
-import com.jotaefi.crud.dto.EmployeeUpdateDTO;
+import com.jotaefi.crud.dto.request.EmployeeCreateDTO;
+import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
+import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
 import com.jotaefi.crud.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

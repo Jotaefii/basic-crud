@@ -1,6 +1,6 @@
 package com.jotaefi.crud.exception;
 
-import com.jotaefi.crud.dto.ErrorResponse;
+import com.jotaefi.crud.dto.response.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandle {
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponse> HandleBadRequestExcpetion(BadRequestException e) {
-        ErrorResponse response = ErrorResponse.builder()
+    public ResponseEntity<ErrorResponseDTO> HandleBadRequestExcpetion(BadRequestException e) {
+        ErrorResponseDTO response = ErrorResponseDTO.builder()
                 .message(e.getMessage())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .build();
@@ -20,8 +20,8 @@ public class GlobalExceptionHandle {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> HandleNotFounException(NotFoundException e) {
-        ErrorResponse response = ErrorResponse.builder()
+    public ResponseEntity<ErrorResponseDTO> HandleNotFounException(NotFoundException e) {
+        ErrorResponseDTO response = ErrorResponseDTO.builder()
                 .message(e.getMessage())
                 .status(HttpStatus.NOT_FOUND.value())
                 .build();
