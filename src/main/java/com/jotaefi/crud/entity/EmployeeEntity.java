@@ -2,8 +2,10 @@ package com.jotaefi.crud.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "employees")
@@ -12,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Employee {
+public class EmployeeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +31,8 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    private Department department;
+    private DepartmentEntity department;
+
+    @CreationTimestamp
+    private LocalDateTime registrationDate;
 }
