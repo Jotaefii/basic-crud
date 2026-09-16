@@ -28,4 +28,24 @@ public class GlobalExceptionHandle {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+    @ExceptionHandler(InvalidStatusException.class)
+    public ResponseEntity<ErrorResponseDTO> HandleInvalidStatusException(InvalidStatusException e) {
+        ErrorResponseDTO response = ErrorResponseDTO.builder()
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(EmployeeAlreadyTurnedOffException.class)
+    public ResponseEntity<ErrorResponseDTO> HandleInvalidStatusException(EmployeeAlreadyTurnedOffException e) {
+        ErrorResponseDTO response = ErrorResponseDTO.builder()
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 }

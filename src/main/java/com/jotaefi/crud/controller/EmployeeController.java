@@ -3,10 +3,15 @@ package com.jotaefi.crud.controller;
 import com.jotaefi.crud.dto.request.EmployeeCreateDTO;
 import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
+import com.jotaefi.crud.enums.EmployeeStatus;
+import com.jotaefi.crud.exception.InvalidStatusException;
 import com.jotaefi.crud.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +33,8 @@ public class EmployeeController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeResponseDTO> findAll() {
-        return employeeService.findAll();
+    public Page<EmployeeResponseDTO> findAll(Pageable pageable) {
+        return employeeService.findAll(pageable);
     }
 
     @GetMapping("/{employeeId}")
@@ -50,9 +55,16 @@ public class EmployeeController {
         return employeeService.updateEmployee(employeeUpdateDTO, employeeId);
     }
 
-    @DeleteMapping("/{employeeId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteEmployee(@PathVariable Long employeeId) {
-        employeeService.deleteEmployee(employeeId);
+    @GetMapping("/status/{status}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<EmployeeResponseDTO>> findAllByStatus(@PathVariable String status) {
+        EmployeeStatus employeeStatus;
+        try {
+            employeeStatus = EmployeeStatus.valueOf(status.toUpperCase());
+        }
+        catch (IllegalArgumentException e) {
+            throw new InvalidStatusException("Status '" + status + "' não existe");
+        }
+        return ResponseEntity.ok(employeeService.findAllByStatus(employeeStatus));
     }
 }
