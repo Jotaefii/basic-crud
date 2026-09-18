@@ -67,4 +67,9 @@ public class EmployeeController {
         }
         return ResponseEntity.ok(employeeService.findAllByStatus(employeeStatus));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<EmployeeResponseDTO>> findByName(@RequestParam String name) {
+        return ResponseEntity.ok(employeeService.findByName(name));
+    }
 }

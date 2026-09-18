@@ -17,5 +17,6 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
     List<EmployeeEntity> findByStatusAndStatusChangeBefore(EmployeeStatus status, LocalDateTime date);
     List<EmployeeEntity> findByStatusOrderByNameAsc(EmployeeStatus status);
     Page<EmployeeEntity> findByStatusInOrderByNameAsc(List<EmployeeStatus> statuses, Pageable pageable);
+    List<EmployeeEntity> findByNameContainingIgnoreCaseAndStatusInOrderByNameAsc(String name, List<EmployeeStatus> statuses);
 
 }

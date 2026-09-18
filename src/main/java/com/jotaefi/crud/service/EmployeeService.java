@@ -193,4 +193,22 @@ public class EmployeeService {
                 ))
                 .toList();
     }
+
+    public List<EmployeeResponseDTO> findByName(String employeeName) {
+        List<EmployeeStatus> statuses = List.of(EmployeeStatus.ATIVO, EmployeeStatus.FERIAS);
+
+        List<EmployeeEntity> employees = employeeRepository.findByNameContainingIgnoreCaseAndStatusInOrderByNameAsc(employeeName, statuses);
+
+        return employees.stream()
+                .map(e -> new EmployeeResponseDTO(
+                        e.getId(),
+                        e.getName(),
+                        e.getEmail(),
+                        e.getSalary(),
+                        e.getDepartment().getName(),
+                        e.getStatus(),
+                        e.getRegistrationDate()
+                ))
+                .toList();
+    }
 }
