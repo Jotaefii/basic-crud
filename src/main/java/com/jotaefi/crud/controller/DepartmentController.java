@@ -7,6 +7,7 @@ import com.jotaefi.crud.service.DepartmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,8 @@ public class DepartmentController {
     private final DepartmentService departmentService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
-    public DepartmentResponseDTO createDepartment(@RequestBody @Valid DepartmentCreateDTO departmentCreateDTO) {
-        return departmentService.createDepartment(departmentCreateDTO);
+    public ResponseEntity<DepartmentResponseDTO> createDepartment(@RequestBody @Valid DepartmentCreateDTO departmentCreateDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(departmentService.createDepartment(departmentCreateDTO));
     }
 
     @GetMapping

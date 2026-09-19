@@ -8,14 +8,17 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public record EmployeeCreateDTO(
-        @NotBlank
+        @NotBlank(message = "Nome é obrigatório")
         String name,
-        @NotBlank
-        @Email
+
+        @NotBlank(message = "Email é obrigatório")
+        @Email(message = "Email inválido")
         String email,
-        @Positive
+
+        @Positive(message = "Salário deve ser maior que zero")
         BigDecimal salary,
-        @NotNull
+
+        @NotNull(message = "Id do departamento é obrigatório")
         Long departmentId
 ) {
 }
