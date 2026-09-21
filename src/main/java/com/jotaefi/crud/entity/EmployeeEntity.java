@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "employees")
@@ -33,8 +34,6 @@ public class EmployeeEntity {
     @CreationTimestamp
     private LocalDateTime registrationDate;
 
-    private LocalDateTime statusChange;
-
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private EmployeeStatus status = EmployeeStatus.ATIVO;
@@ -42,4 +41,7 @@ public class EmployeeEntity {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;
+
+    @OneToMany(mappedBy = "employee")
+    private List<EmployeeStatusHistory> statusHistories;
 }

@@ -5,12 +5,14 @@ import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
 import com.jotaefi.crud.entity.DepartmentEntity;
 import com.jotaefi.crud.entity.EmployeeEntity;
+import com.jotaefi.crud.entity.EmployeeStatusHistory;
 import com.jotaefi.crud.enums.EmployeeStatus;
 import com.jotaefi.crud.exception.BadRequestException;
 import com.jotaefi.crud.exception.EmployeeAlreadyTurnedOffException;
 import com.jotaefi.crud.exception.NotFoundException;
 import com.jotaefi.crud.repository.DepartmentRepository;
 import com.jotaefi.crud.repository.EmployeeRepository;
+import com.jotaefi.crud.repository.EmployeeStatusHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,7 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
+    private final EmployeeStatusHistoryRepository employeeStatusHistoryRepository;
 
     @Transactional
     public EmployeeResponseDTO createEmployee(EmployeeCreateDTO employeeRequest) {
@@ -48,15 +51,7 @@ public class EmployeeService {
 
         EmployeeEntity salvo = employeeRepository.save(employeeEntity);
 
-        return EmployeeResponseDTO.builder()
-                .id(salvo.getId())
-                .name(salvo.getName())
-                .email(salvo.getEmail())
-                .salary(salvo.getSalary())
-                .departmentName(salvo.getDepartment().getName())
-                .status(salvo.getStatus())
-                .registrationDate(salvo.getRegistrationDate())
-                .build();
+        return toResponse(salvo);
     }
 
     public Page<EmployeeResponseDTO> findAll(Pageable pageable) {
@@ -64,32 +59,14 @@ public class EmployeeService {
 
         Page<EmployeeEntity> employees = employeeRepository.findByStatusInOrderByNameAsc(statuses, pageable);
 
-        return employees
-                .map(e -> EmployeeResponseDTO.builder()
-                        .id(e.getId())
-                        .name(e.getName())
-                        .email(e.getEmail())
-                        .salary(e.getSalary())
-                        .departmentName(e.getDepartment().getName())
-                        .status(e.getStatus())
-                        .registrationDate(e.getRegistrationDate())
-                        .build()
-                );
+        return employees.map(this::toResponse);
     }
 
     public EmployeeResponseDTO findEmployeeById(Long employeeId) {
         EmployeeEntity employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
 
-        return EmployeeResponseDTO.builder()
-                .id(employee.getId())
-                .name(employee.getName())
-                .email(employee.getEmail())
-                .salary(employee.getSalary())
-                .departmentName(employee.getDepartment().getName())
-                .status(employee.getStatus())
-                .registrationDate(employee.getRegistrationDate())
-                .build();
+        return toResponse(employee);
     }
 
     public List<EmployeeResponseDTO> findByDepartmentId(Long departmentId) {
@@ -100,17 +77,7 @@ public class EmployeeService {
 
         List<EmployeeEntity> employees = employeeRepository.findByDepartmentIdAndStatusInOrderByNameAsc(departmentId, statuses);
 
-        return employees.stream()
-                .map(e -> new EmployeeResponseDTO(
-                        e.getId(),
-                        e.getName(),
-                        e.getEmail(),
-                        e.getSalary(),
-                        e.getDepartment().getName(),
-                        e.getStatus(),
-                        e.getRegistrationDate()
-                ))
-                .toList();
+        return employees.stream().map(this::toResponse).toList();
     }
 
     @Transactional
@@ -121,20 +88,21 @@ public class EmployeeService {
         if (employee.getStatus() == EmployeeStatus.DESLIGADO) {
             if (employeeUpdateDTO.status() == EmployeeStatus.ATIVO) {
 
+                EmployeeStatusHistory history = new EmployeeStatusHistory(
+                        null,
+                        employee.getStatus(),
+                        EmployeeStatus.ATIVO,
+                        LocalDateTime.now(),
+                        employee
+                );
+
+                employeeStatusHistoryRepository.save(history);
+
                 employee.setStatus(EmployeeStatus.ATIVO);
-                employee.setStatusChange(null);
 
                 employeeRepository.save(employee);
 
-                return EmployeeResponseDTO.builder()
-                        .id(employee.getId())
-                        .name(employee.getName())
-                        .email(employee.getEmail())
-                        .salary(employee.getSalary())
-                        .departmentName(employee.getDepartment().getName())
-                        .status(employee.getStatus())
-                        .registrationDate(employee.getRegistrationDate())
-                        .build();
+                return toResponse(employee);
 
             } else {
                 throw new EmployeeAlreadyTurnedOffException("Você não pode alterar valores de um funcionário desligado até ele ser ativo novamente.");
@@ -154,19 +122,41 @@ public class EmployeeService {
         }
 
         if (employeeUpdateDTO.status() != null && employeeUpdateDTO.status() != employee.getStatus()) {
-            EmployeeStatus novoStatus = employeeUpdateDTO.status();
+            EmployeeStatus oldStatus = employeeUpdateDTO.status();
+            EmployeeStatus newStatus = employeeUpdateDTO.status();
 
-            employee.setStatus(novoStatus);
+            EmployeeStatusHistory history = new EmployeeStatusHistory();
 
-            if (novoStatus == EmployeeStatus.FERIAS || novoStatus == EmployeeStatus.DESLIGADO) {
-                employee.setStatusChange(LocalDateTime.now());
-            } else if (novoStatus == EmployeeStatus.ATIVO) {
-                employee.setStatusChange(null);
-            }
+            history.setOldStatus(oldStatus);
+            history.setNewStatus(newStatus);
+            history.setChangeAt(LocalDateTime.now());
+            history.setEmployee(employee);
+
+            employeeStatusHistoryRepository.save(history);
+
+            employee.setStatus(newStatus);
         }
 
         employeeRepository.save(employee);
 
+        return toResponse(employee);
+    }
+
+    public List<EmployeeResponseDTO> findAllByStatus (EmployeeStatus status) {
+        List<EmployeeEntity> employees = employeeRepository.findByStatusOrderByNameAsc(status);
+
+        return employees.stream().map(this::toResponse).toList();
+    }
+
+    public List<EmployeeResponseDTO> findByName(String employeeName) {
+        List<EmployeeStatus> statuses = List.of(EmployeeStatus.ATIVO, EmployeeStatus.FERIAS);
+
+        List<EmployeeEntity> employees = employeeRepository.findByNameContainingIgnoreCaseAndStatusInOrderByNameAsc(employeeName, statuses);
+
+        return employees.stream().map(this::toResponse).toList();
+    }
+
+    private EmployeeResponseDTO toResponse(EmployeeEntity employee) {
         return EmployeeResponseDTO.builder()
                 .id(employee.getId())
                 .name(employee.getName())
@@ -176,39 +166,5 @@ public class EmployeeService {
                 .status(employee.getStatus())
                 .registrationDate(employee.getRegistrationDate())
                 .build();
-    }
-
-    public List<EmployeeResponseDTO> findAllByStatus (EmployeeStatus status) {
-        List<EmployeeEntity> employees = employeeRepository.findByStatusOrderByNameAsc(status);
-
-        return employees.stream()
-                .map(employee -> new EmployeeResponseDTO(
-                        employee.getId(),
-                        employee.getName(),
-                        employee.getEmail(),
-                        employee.getSalary(),
-                        employee.getDepartment().getName(),
-                        employee.getStatus(),
-                        employee.getRegistrationDate()
-                ))
-                .toList();
-    }
-
-    public List<EmployeeResponseDTO> findByName(String employeeName) {
-        List<EmployeeStatus> statuses = List.of(EmployeeStatus.ATIVO, EmployeeStatus.FERIAS);
-
-        List<EmployeeEntity> employees = employeeRepository.findByNameContainingIgnoreCaseAndStatusInOrderByNameAsc(employeeName, statuses);
-
-        return employees.stream()
-                .map(e -> new EmployeeResponseDTO(
-                        e.getId(),
-                        e.getName(),
-                        e.getEmail(),
-                        e.getSalary(),
-                        e.getDepartment().getName(),
-                        e.getStatus(),
-                        e.getRegistrationDate()
-                ))
-                .toList();
     }
 }

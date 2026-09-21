@@ -1,8 +1,10 @@
 package com.jotaefi.crud.service;
 
 import com.jotaefi.crud.entity.EmployeeEntity;
+import com.jotaefi.crud.entity.EmployeeStatusHistory;
 import com.jotaefi.crud.enums.EmployeeStatus;
 import com.jotaefi.crud.repository.EmployeeRepository;
+import com.jotaefi.crud.repository.EmployeeStatusHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.List;
 public class EmployeeScheduler {
 
     private final EmployeeRepository employeeRepository;
+    private final EmployeeStatusHistoryRepository employeeStatusHistoryRepository;
 
     @Scheduled(fixedRate = 300000)
     public void checkEmployee(){
@@ -26,13 +29,30 @@ public class EmployeeScheduler {
     private void checkVacations() {
         LocalDateTime limit = LocalDateTime.now().minusMinutes(5);
 
-        List<EmployeeEntity> employees = employeeRepository.findByStatusAndStatusChangeBefore(EmployeeStatus.FERIAS, limit);
+        List<EmployeeStatusHistory> histories = employeeStatusHistoryRepository.findByNewStatusAndChangeAtBefore(EmployeeStatus.FERIAS, limit);
 
-        for (EmployeeEntity employee : employees) {
-            employee.setStatus(EmployeeStatus.ATIVO);
-            employee.setStatusChange(null);
+        for (EmployeeStatusHistory h : histories) {
+            EmployeeEntity employee = h.getEmployee();
+
+            EmployeeStatusHistory lastHistory = employeeStatusHistoryRepository.findTopByEmployeeIdOrderByChangeAtDesc(employee.getId())
+                    .orElse(null);
+
+            if (lastHistory != null
+                    && lastHistory.getNewStatus() == EmployeeStatus.FERIAS
+                    && lastHistory.getChangeAt().isBefore(limit)) {
+
+                EmployeeStatusHistory history = new EmployeeStatusHistory(
+                        null,
+                        EmployeeStatus.FERIAS,
+                        EmployeeStatus.ATIVO,
+                        LocalDateTime.now(),
+                        employee
+                );
+
+                employeeStatusHistoryRepository.save(history);
+                employee.setStatus(EmployeeStatus.ATIVO);
+            }
+            employeeRepository.save(employee);
         }
-
-        employeeRepository.saveAll(employees);
     }
 }

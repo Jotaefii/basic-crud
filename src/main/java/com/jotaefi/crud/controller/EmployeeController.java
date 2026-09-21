@@ -4,7 +4,6 @@ import com.jotaefi.crud.dto.request.EmployeeCreateDTO;
 import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
 import com.jotaefi.crud.enums.EmployeeStatus;
-import com.jotaefi.crud.exception.InvalidStatusException;
 import com.jotaefi.crud.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -55,15 +54,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/status/{status}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<EmployeeResponseDTO>> findAllByStatus(@PathVariable String status) {
-        EmployeeStatus employeeStatus;
-        try {
-            employeeStatus = EmployeeStatus.valueOf(status.toUpperCase());
-        }
-        catch (IllegalArgumentException e) {
-            throw new InvalidStatusException("Status '" + status + "' não existe");
-        }
+        EmployeeStatus employeeStatus = EmployeeStatus.fromString(status);
         return ResponseEntity.ok(employeeService.findAllByStatus(employeeStatus));
     }
 
