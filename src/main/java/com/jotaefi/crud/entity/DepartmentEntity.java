@@ -18,5 +18,4 @@ public class DepartmentEntity {
 
     @Column(nullable = false, unique = true)
     private String name;
-
 }

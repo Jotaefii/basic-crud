@@ -3,14 +3,14 @@ package com.jotaefi.crud.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.jotaefi.crud.exception.InvalidStatusException;
 
-public enum EmployeeStatus {
+public enum UserStatus {
 
     ATIVO,
     FERIAS,
     DESLIGADO;
 
     @JsonCreator
-    public static EmployeeStatus fromString(String status) {
+    public static UserStatus fromString(String status) {
         try {
             return valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {

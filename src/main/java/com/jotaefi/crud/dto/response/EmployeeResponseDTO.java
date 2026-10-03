@@ -1,10 +1,10 @@
 package com.jotaefi.crud.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.jotaefi.crud.enums.EmployeeStatus;
+import com.jotaefi.crud.entity.CardsEntity;
+import com.jotaefi.crud.enums.UserStatus;
 import lombok.Builder;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
@@ -12,9 +12,9 @@ public record EmployeeResponseDTO(
         Long id,
         String name,
         String email,
-        BigDecimal salary,
+        Long cardId,
         String departmentName,
-        EmployeeStatus status,
+        UserStatus status,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime registrationDate
 ) {

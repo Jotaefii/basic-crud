@@ -2,11 +2,12 @@ package com.jotaefi.crud.dto.response;
 
 import lombok.Builder;
 
-import java.util.List;
+import java.util.Map;
 
 @Builder
 public record ErrorResponseDTO(
-        List<String> message,
-        Integer status
+        String message,
+        Integer status,
+        Map<String, String> errors
 ) {
 }

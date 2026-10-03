@@ -1,6 +1,6 @@
 package com.jotaefi.crud.entity;
 
-import com.jotaefi.crud.enums.EmployeeStatus;
+import com.jotaefi.crud.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,20 +15,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class EmployeeStatusHistory {
+public class UserStatusHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private EmployeeStatus oldStatus;
-
+    private UserStatus oldStatus;
     @Enumerated(EnumType.STRING)
-    private EmployeeStatus newStatus;
-
+    private UserStatus newStatus;
     private LocalDateTime changeAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
     private EmployeeEntity employee;
 }

@@ -1,9 +1,6 @@
 package com.jotaefi.crud.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
@@ -15,7 +12,11 @@ public record EmployeeCreateDTO(
         @Email(message = "Email inválido")
         String email,
 
-        @Positive(message = "Salário deve ser maior que zero")
+        @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
+        String password,
+
+        @NotNull(message = "Salário é obrigatorio")
+        @Positive
         BigDecimal salary,
 
         @NotNull(message = "Id do departamento é obrigatório")

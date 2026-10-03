@@ -1,9 +1,9 @@
 package com.jotaefi.crud.controller;
 
 import com.jotaefi.crud.dto.request.EmployeeCreateDTO;
-import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
-import com.jotaefi.crud.enums.EmployeeStatus;
+import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
+import com.jotaefi.crud.enums.UserStatus;
 import com.jotaefi.crud.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +55,8 @@ public class EmployeeController {
 
     @GetMapping("/status/{status}")
     public ResponseEntity<List<EmployeeResponseDTO>> findAllByStatus(@PathVariable String status) {
-        EmployeeStatus employeeStatus = EmployeeStatus.fromString(status);
-        return ResponseEntity.ok(employeeService.findAllByStatus(employeeStatus));
+        UserStatus userStatus = UserStatus.fromString(status);
+        return ResponseEntity.ok(employeeService.findAllByStatus(userStatus));
     }
 
     @GetMapping("/search")

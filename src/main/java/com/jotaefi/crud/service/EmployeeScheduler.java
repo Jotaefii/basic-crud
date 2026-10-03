@@ -1,10 +1,10 @@
 package com.jotaefi.crud.service;
 
 import com.jotaefi.crud.entity.EmployeeEntity;
-import com.jotaefi.crud.entity.EmployeeStatusHistory;
-import com.jotaefi.crud.enums.EmployeeStatus;
+import com.jotaefi.crud.entity.UserStatusHistory;
+import com.jotaefi.crud.enums.UserStatus;
 import com.jotaefi.crud.repository.EmployeeRepository;
-import com.jotaefi.crud.repository.EmployeeStatusHistoryRepository;
+import com.jotaefi.crud.repository.UserStatusHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.List;
 public class EmployeeScheduler {
 
     private final EmployeeRepository employeeRepository;
-    private final EmployeeStatusHistoryRepository employeeStatusHistoryRepository;
+    private final UserStatusHistoryRepository userStatusHistoryRepository;
 
     @Scheduled(fixedRate = 300000)
     public void checkEmployee(){
@@ -29,28 +29,28 @@ public class EmployeeScheduler {
     private void checkVacations() {
         LocalDateTime limit = LocalDateTime.now().minusMinutes(5);
 
-        List<EmployeeStatusHistory> histories = employeeStatusHistoryRepository.findByNewStatusAndChangeAtBefore(EmployeeStatus.FERIAS, limit);
+        List<UserStatusHistory> histories = userStatusHistoryRepository.findByNewStatusAndChangeAtBefore(UserStatus.FERIAS, limit);
 
-        for (EmployeeStatusHistory h : histories) {
+        for (UserStatusHistory h : histories) {
             EmployeeEntity employee = h.getEmployee();
 
-            EmployeeStatusHistory lastHistory = employeeStatusHistoryRepository.findTopByEmployeeIdOrderByChangeAtDesc(employee.getId())
+            UserStatusHistory lastHistory = userStatusHistoryRepository.findTopByUserIdOrderByChangeAtDesc(employee.getId())
                     .orElse(null);
 
             if (lastHistory != null
-                    && lastHistory.getNewStatus() == EmployeeStatus.FERIAS
+                    && lastHistory.getNewStatus() == UserStatus.FERIAS
                     && lastHistory.getChangeAt().isBefore(limit)) {
 
-                EmployeeStatusHistory history = new EmployeeStatusHistory(
+                UserStatusHistory history = new UserStatusHistory(
                         null,
-                        EmployeeStatus.FERIAS,
-                        EmployeeStatus.ATIVO,
+                        UserStatus.FERIAS,
+                        UserStatus.ATIVO,
                         LocalDateTime.now(),
                         employee
                 );
 
-                employeeStatusHistoryRepository.save(history);
-                employee.setStatus(EmployeeStatus.ATIVO);
+                userStatusHistoryRepository.save(history);
+                employee.setStatus(UserStatus.ATIVO);
             }
             employeeRepository.save(employee);
         }

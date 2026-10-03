@@ -1,104 +1,138 @@
 package com.jotaefi.crud.service;
 
 import com.jotaefi.crud.dto.request.EmployeeCreateDTO;
-import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
-import com.jotaefi.crud.entity.DepartmentEntity;
-import com.jotaefi.crud.entity.EmployeeEntity;
-import com.jotaefi.crud.entity.EmployeeStatusHistory;
-import com.jotaefi.crud.enums.EmployeeStatus;
+import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
+import com.jotaefi.crud.entity.*;
+import com.jotaefi.crud.enums.UserStatus;
 import com.jotaefi.crud.exception.BadRequestException;
 import com.jotaefi.crud.exception.EmployeeAlreadyTurnedOffException;
 import com.jotaefi.crud.exception.NotFoundException;
-import com.jotaefi.crud.repository.DepartmentRepository;
-import com.jotaefi.crud.repository.EmployeeRepository;
-import com.jotaefi.crud.repository.EmployeeStatusHistoryRepository;
+import com.jotaefi.crud.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
 
+    private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
+    private final RolesRepository rolesRepository;
+    private final CardRepository cardRepository;
     private final DepartmentRepository departmentRepository;
-    private final EmployeeStatusHistoryRepository employeeStatusHistoryRepository;
+    private final UserStatusHistoryRepository userStatusHistoryRepository;
 
     @Transactional
-    public EmployeeResponseDTO createEmployee(EmployeeCreateDTO employeeRequest) {
-        DepartmentEntity departmentEntityId = departmentRepository.findById(employeeRequest.departmentId())
+    public EmployeeResponseDTO createEmployee(EmployeeCreateDTO request) {
+
+        DepartmentEntity department = departmentRepository.findById(request.departmentId())
                 .orElseThrow(() -> new NotFoundException("Departamento não encontrado"));
 
-        EmployeeEntity e = employeeRepository.findByEmail(employeeRequest.email())
-                .orElse(null);
-
-        if (e != null) {
-            throw new BadRequestException("Já possui um funcionário com este email");
+        if (userRepository.existsByEmail(request.email())) {
+            throw new BadRequestException("Email já cadastrado");
         }
 
-        EmployeeEntity employeeEntity = EmployeeEntity.builder()
-                .name(employeeRequest.name())
-                .email(employeeRequest.email())
-                .salary(employeeRequest.salary())
-                .department(departmentEntityId)
+        RolesEntity role = rolesRepository.findByName("ROLE_EMPLOYEE")
+                .orElseThrow(() -> new NotFoundException("Permissão não encontrada"));
+
+        UsersEntity user = UsersEntity.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(request.password())
+                .roles(new HashSet<>(Set.of(role)))
                 .build();
 
-        EmployeeEntity salvo = employeeRepository.save(employeeEntity);
+        userRepository.saveAndFlush(user);
 
-        return toResponse(salvo);
+        EmployeeEntity employee = EmployeeEntity.builder()
+                .user(user)
+                .status(UserStatus.ATIVO)
+                .department(department)
+                .build();
+
+        employeeRepository.save(employee);
+
+        CardsEntity card = CardsEntity.builder()
+                .salary(request.salary())
+                .employee(employee)
+                .build();
+
+        cardRepository.save(card);
+
+        employee.setCard(card);
+        user.setEmployee(employee);
+
+        return toResponse(employee);
     }
 
+    @Transactional(readOnly = true)
     public Page<EmployeeResponseDTO> findAll(Pageable pageable) {
-        List<EmployeeStatus> statuses = List.of(EmployeeStatus.ATIVO, EmployeeStatus.FERIAS);
 
-        Page<EmployeeEntity> employees = employeeRepository.findByStatusInOrderByNameAsc(statuses, pageable);
+        List<UserStatus> statuses = List.of(UserStatus.ATIVO, UserStatus.FERIAS);
 
-        return employees.map(this::toResponse);
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.ASC, "user.name")
+        );
+
+        return employeeRepository.findByStatusIn(statuses, sortedPageable)
+                .map(this::toResponse);
     }
 
+    @Transactional(readOnly = true)
     public EmployeeResponseDTO findEmployeeById(Long employeeId) {
+
         EmployeeEntity employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
 
         return toResponse(employee);
     }
 
+    @Transactional(readOnly = true)
     public List<EmployeeResponseDTO> findByDepartmentId(Long departmentId) {
+
         departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException("Departamento não encontrado"));
 
-        List<EmployeeStatus> statuses = List.of(EmployeeStatus.ATIVO, EmployeeStatus.FERIAS);
+        List<UserStatus> statuses = List.of(UserStatus.ATIVO, UserStatus.FERIAS);
 
-        List<EmployeeEntity> employees = employeeRepository.findByDepartmentIdAndStatusInOrderByNameAsc(departmentId, statuses);
-
-        return employees.stream().map(this::toResponse).toList();
+        return employeeRepository.findByDepartmentIdAndStatusIn(departmentId, statuses, Sort.by("user.name"))
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional
-    public EmployeeResponseDTO updateEmployee(EmployeeUpdateDTO employeeUpdateDTO, Long employeeId) {
+    public EmployeeResponseDTO updateEmployee(EmployeeUpdateDTO request, Long employeeId) {
         EmployeeEntity employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
 
-        if (employee.getStatus() == EmployeeStatus.DESLIGADO) {
-            if (employeeUpdateDTO.status() == EmployeeStatus.ATIVO) {
+        if (employee.getStatus() == UserStatus.DESLIGADO) {
+            if (request.status() == UserStatus.ATIVO) {
 
-                EmployeeStatusHistory history = new EmployeeStatusHistory(
+                UserStatusHistory history = new UserStatusHistory(
                         null,
                         employee.getStatus(),
-                        EmployeeStatus.ATIVO,
+                        UserStatus.ATIVO,
                         LocalDateTime.now(),
                         employee
                 );
 
-                employeeStatusHistoryRepository.save(history);
+                userStatusHistoryRepository.save(history);
 
-                employee.setStatus(EmployeeStatus.ATIVO);
+                employee.setStatus(UserStatus.ATIVO);
 
                 employeeRepository.save(employee);
 
@@ -109,30 +143,42 @@ public class EmployeeService {
             }
         }
 
-        if (employeeUpdateDTO.name() != null) {
-            employee.setName(employeeUpdateDTO.name());
+        UsersEntity user = employee.getUser();
+
+        if (request.name() != null) {
+            user.setName(request.name());
         }
 
-        if (employeeUpdateDTO.email() != null) {
-            employee.setEmail(employeeUpdateDTO.email());
+        if (request.email() != null && !request.email().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(request.email())) {
+                throw new BadRequestException("Email já cadastrado");
+            }
+            user.setEmail(request.email());
         }
 
-        if (employeeUpdateDTO.salary() != null) {
-            employee.setSalary(employeeUpdateDTO.salary());
+        if (request.salary() != null) {
+            employee.getCard().setSalary(request.salary());
         }
 
-        if (employeeUpdateDTO.status() != null && employeeUpdateDTO.status() != employee.getStatus()) {
-            EmployeeStatus oldStatus = employeeUpdateDTO.status();
-            EmployeeStatus newStatus = employeeUpdateDTO.status();
+        if (request.departmentId() != null) {
+            DepartmentEntity department = departmentRepository.findById(request.departmentId())
+                    .orElseThrow(() -> new NotFoundException("Departamento não encontrado"));
 
-            EmployeeStatusHistory history = new EmployeeStatusHistory();
+            employee.setDepartment(department);
+        }
+
+        if (request.status() != null && request.status() != employee.getStatus()) {
+            UserStatus oldStatus = request.status();
+            UserStatus newStatus = request.status();
+
+            UserStatusHistory history = new UserStatusHistory();
 
             history.setOldStatus(oldStatus);
             history.setNewStatus(newStatus);
             history.setChangeAt(LocalDateTime.now());
             history.setEmployee(employee);
 
-            employeeStatusHistoryRepository.save(history);
+            userStatusHistoryRepository.save(history);
 
             employee.setStatus(newStatus);
         }
@@ -142,29 +188,36 @@ public class EmployeeService {
         return toResponse(employee);
     }
 
-    public List<EmployeeResponseDTO> findAllByStatus (EmployeeStatus status) {
-        List<EmployeeEntity> employees = employeeRepository.findByStatusOrderByNameAsc(status);
-
-        return employees.stream().map(this::toResponse).toList();
+    @Transactional(readOnly = true)
+    public List<EmployeeResponseDTO> findAllByStatus (UserStatus status) {
+        return employeeRepository.findByStatus(status, Sort.by("user.name")).stream()
+                .map(this::toResponse)
+                .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<EmployeeResponseDTO> findByName(String employeeName) {
-        List<EmployeeStatus> statuses = List.of(EmployeeStatus.ATIVO, EmployeeStatus.FERIAS);
+        List<UserStatus> statuses = List.of(UserStatus.ATIVO, UserStatus.FERIAS);
 
-        List<EmployeeEntity> employees = employeeRepository.findByNameContainingIgnoreCaseAndStatusInOrderByNameAsc(employeeName, statuses);
-
-        return employees.stream().map(this::toResponse).toList();
+        return employeeRepository.findByUserNameContainingIgnoreCaseAndStatusIn(employeeName, statuses, Sort.by("user.name"))
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     private EmployeeResponseDTO toResponse(EmployeeEntity employee) {
+
+        UsersEntity user = employee.getUser();
+        CardsEntity card = employee.getCard();
+
         return EmployeeResponseDTO.builder()
                 .id(employee.getId())
-                .name(employee.getName())
-                .email(employee.getEmail())
-                .salary(employee.getSalary())
+                .name(user.getName())
+                .email(user.getEmail())
+                .cardId(card.getId())
                 .departmentName(employee.getDepartment().getName())
                 .status(employee.getStatus())
-                .registrationDate(employee.getRegistrationDate())
+                .registrationDate(user.getRegistrationDate())
                 .build();
     }
 }

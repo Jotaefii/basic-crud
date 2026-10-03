@@ -1,20 +1,18 @@
 package com.jotaefi.crud.entity;
 
-import com.jotaefi.crud.enums.EmployeeStatus;
+import com.jotaefi.crud.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "employees")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
 public class EmployeeEntity {
 
@@ -22,26 +20,23 @@ public class EmployeeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false,precision = 10, scale = 2)
-    private BigDecimal salary;
-
-    @CreationTimestamp
-    private LocalDateTime registrationDate;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private UsersEntity user;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private EmployeeStatus status = EmployeeStatus.ATIVO;
+    private UserStatus status = UserStatus.ATIVO;
 
-    @ManyToOne
-    @JoinColumn(name = "department_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", nullable = false)
     private DepartmentEntity department;
 
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CardsEntity card;
+
     @OneToMany(mappedBy = "employee")
-    private List<EmployeeStatusHistory> statusHistories;
+    @Builder.Default
+    private List<UserStatusHistory> statusHistories = new ArrayList<>();
+
 }
