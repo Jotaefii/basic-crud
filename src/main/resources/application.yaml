@@ -14,3 +14,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+jwt:
+  expiration: ${JWT_EXPIRATION:900000}
+  key: ${JWT_KEY:#86CxuxSYWRzuSt3e0OxmDR2R2JQL8CNPBd=X5jzLG!MUK!oTDCUoyEvBKTs6TH!U5AcYcc6a5xyO5JsNU8qVRK=pKLCrw$7gsZddTcqU9xmbxp=1webVOOcQTuiKAHr4PawZFKRMPXQpOMTT=c55Kr=0BJMkYZNGplIGElbAXqhgz0kLVp-l3ki#8w6r=iDuTYM!FQnTLSxkrCDyL$_k15NmVlrJL4iuRmKv3RHjSjk6cu#q6LysHIs45yEJREAFob_3KVNrMS5THNchg9qGfI6moOEQ5yOTNZGxY4aV8wadMnjRH9HXe#uD$Lyo$wYf4lNX2kB55oR=DfHtpJpYV8}
