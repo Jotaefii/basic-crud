@@ -28,6 +28,6 @@ public class UserStatusHistory {
     private LocalDateTime changeAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
+    @JoinColumn(name = "employee_id")
     private EmployeeEntity employee;
 }

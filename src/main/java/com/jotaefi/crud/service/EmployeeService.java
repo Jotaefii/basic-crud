@@ -2,6 +2,7 @@ package com.jotaefi.crud.service;
 
 import com.jotaefi.crud.dto.request.EmployeeCreateDTO;
 import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
+import com.jotaefi.crud.dto.response.EmployeeProfileResponseDTO;
 import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.entity.*;
 import com.jotaefi.crud.enums.UserStatus;
@@ -14,10 +15,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +36,7 @@ public class EmployeeService {
     private final CardRepository cardRepository;
     private final DepartmentRepository departmentRepository;
     private final UserStatusHistoryRepository userStatusHistoryRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
     public EmployeeResponseDTO createEmployee(EmployeeCreateDTO request) {
@@ -49,7 +54,7 @@ public class EmployeeService {
         UsersEntity user = UsersEntity.builder()
                 .name(request.name())
                 .email(request.email())
-                .password(request.password())
+                .password(passwordEncoder.encode(request.password()))
                 .roles(new HashSet<>(Set.of(role)))
                 .build();
 
@@ -168,7 +173,7 @@ public class EmployeeService {
         }
 
         if (request.status() != null && request.status() != employee.getStatus()) {
-            UserStatus oldStatus = request.status();
+            UserStatus oldStatus = employee.getStatus();
             UserStatus newStatus = request.status();
 
             UserStatusHistory history = new UserStatusHistory();
@@ -204,6 +209,41 @@ public class EmployeeService {
                 .map(this::toResponse)
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public EmployeeProfileResponseDTO getMyProfile(String email) {
+
+        UsersEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new NotFoundException("Usuário não encontrado"));
+
+        EmployeeEntity employee = employeeRepository.findByUserId(user.getId())
+                .orElseThrow(() ->
+                        new NotFoundException("Funcionário não encontrado"));
+
+        return toProfileResponse(employee);
+    }
+
+    private EmployeeProfileResponseDTO toProfileResponse(EmployeeEntity employee) {
+
+        UsersEntity user = employee.getUser();
+        CardsEntity card = employee.getCard();
+
+        Period period = Period.between(user.getRegistrationDate().toLocalDate(), LocalDate.now());
+        String timeAtCompany = period.getYears() + " anos, " + period.getMonths() + " meses e " + period.getDays() + " dias";
+
+        return new EmployeeProfileResponseDTO(
+                employee.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRegistrationDate(),
+                timeAtCompany,
+                employee.getDepartment().getName(),
+                employee.getStatus().name(),
+                card.getSalary()
+        );
+    }
+
 
     private EmployeeResponseDTO toResponse(EmployeeEntity employee) {
 

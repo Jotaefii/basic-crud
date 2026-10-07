@@ -21,6 +21,7 @@ public class EmployeeScheduler {
     private final UserStatusHistoryRepository userStatusHistoryRepository;
 
     @Scheduled(fixedRate = 300000)
+    @Transactional
     public void checkEmployee(){
         checkVacations();
     }
@@ -34,7 +35,7 @@ public class EmployeeScheduler {
         for (UserStatusHistory h : histories) {
             EmployeeEntity employee = h.getEmployee();
 
-            UserStatusHistory lastHistory = userStatusHistoryRepository.findTopByUserIdOrderByChangeAtDesc(employee.getId())
+            UserStatusHistory lastHistory = userStatusHistoryRepository.findTopByEmployeeIdOrderByChangeAtDesc(employee.getId())
                     .orElse(null);
 
             if (lastHistory != null
@@ -49,8 +50,8 @@ public class EmployeeScheduler {
                         employee
                 );
 
-                userStatusHistoryRepository.save(history);
                 employee.setStatus(UserStatus.ATIVO);
+                userStatusHistoryRepository.save(history);
             }
             employeeRepository.save(employee);
         }

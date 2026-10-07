@@ -10,6 +10,6 @@ import java.util.Optional;
 
 public interface UserStatusHistoryRepository extends JpaRepository<UserStatusHistory, Long> {
 
-    Optional<UserStatusHistory> findTopByUserIdOrderByChangeAtDesc(Long userId);
+    Optional<UserStatusHistory> findTopByEmployeeIdOrderByChangeAtDesc(Long employeeId);
     List<UserStatusHistory> findByNewStatusAndChangeAtBefore(UserStatus status, LocalDateTime limit);
 }
