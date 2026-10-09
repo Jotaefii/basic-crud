@@ -75,7 +75,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('ROLE_EMPLOYEE, ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public ResponseEntity<EmployeeProfileResponseDTO> getMyProfile(Authentication authentication) {
         return ResponseEntity.status(HttpStatus.OK).body(employeeService.getMyProfile(authentication.getName()));
     }
