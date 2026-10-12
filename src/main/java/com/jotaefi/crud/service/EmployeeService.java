@@ -6,10 +6,12 @@ import com.jotaefi.crud.dto.response.EmployeeProfileResponseDTO;
 import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.entity.*;
 import com.jotaefi.crud.enums.UserStatus;
-import com.jotaefi.crud.exception.BadRequestException;
+import com.jotaefi.crud.exception.ConflictException;
 import com.jotaefi.crud.exception.EmployeeAlreadyTurnedOffException;
 import com.jotaefi.crud.exception.NotFoundException;
 import com.jotaefi.crud.repository.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -37,6 +40,7 @@ public class EmployeeService {
     private final DepartmentRepository departmentRepository;
     private final UserStatusHistoryRepository userStatusHistoryRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final EntityManager entityManager;
 
     @Transactional
     public EmployeeResponseDTO createEmployee(EmployeeCreateDTO request) {
@@ -45,7 +49,7 @@ public class EmployeeService {
                 .orElseThrow(() -> new NotFoundException("Departamento não encontrado"));
 
         if (userRepository.existsByEmail(request.email())) {
-            throw new BadRequestException("Email já cadastrado");
+            throw new ConflictException("Email já cadastrado");
         }
 
         RolesEntity role = rolesRepository.findByName("ROLE_EMPLOYEE")
@@ -120,9 +124,15 @@ public class EmployeeService {
     }
 
     @Transactional
-    public EmployeeResponseDTO updateEmployee(EmployeeUpdateDTO request, Long employeeId) {
+    public void updateEmployee(EmployeeUpdateDTO request, Long employeeId) {
         EmployeeEntity employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
+
+        if (!Objects.equals(request.version(), employee.getVersion())) {
+            throw new ConflictException("Este funcionário foi alterado por outro usuário. Atualize os dados e tente novamente.");
+        }
+
+        entityManager.lock(employee, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 
         if (employee.getStatus() == UserStatus.DESLIGADO) {
             if (request.status() == UserStatus.ATIVO) {
@@ -141,8 +151,6 @@ public class EmployeeService {
 
                 employeeRepository.save(employee);
 
-                return toResponse(employee);
-
             } else {
                 throw new EmployeeAlreadyTurnedOffException("Você não pode alterar valores de um funcionário desligado até ele ser ativo novamente.");
             }
@@ -156,7 +164,7 @@ public class EmployeeService {
 
         if (request.email() != null && !request.email().equals(user.getEmail())) {
             if (userRepository.existsByEmail(request.email())) {
-                throw new BadRequestException("Email já cadastrado");
+                throw new ConflictException("Email já cadastrado");
             }
             user.setEmail(request.email());
         }
@@ -189,8 +197,6 @@ public class EmployeeService {
         }
 
         employeeRepository.save(employee);
-
-        return toResponse(employee);
     }
 
     @Transactional(readOnly = true)
@@ -258,6 +264,7 @@ public class EmployeeService {
                 .departmentName(employee.getDepartment().getName())
                 .status(employee.getStatus())
                 .registrationDate(user.getRegistrationDate())
+                .version(employee.getVersion())
                 .build();
     }
 }

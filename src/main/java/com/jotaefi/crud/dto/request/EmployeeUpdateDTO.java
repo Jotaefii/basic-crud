@@ -9,6 +9,7 @@ public record EmployeeUpdateDTO(
         String email,
         BigDecimal salary,
         UserStatus status,
-        Long departmentId
+        Long departmentId,
+        Long version
 ) {
 }

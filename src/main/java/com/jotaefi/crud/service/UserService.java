@@ -1,6 +1,7 @@
 package com.jotaefi.crud.service;
 
 import com.jotaefi.crud.dto.response.AdminProfileResponseDTO;
+import com.jotaefi.crud.exception.NotFoundException;
 import com.jotaefi.crud.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class UserService {
 
     public AdminProfileResponseDTO getMyProfile(String email) {
         var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
         Period period = Period.between(user.getRegistrationDate().toLocalDate(), LocalDate.now());
         String timeAtCompany = period.getYears() + " anos, " + period.getMonths() + " meses e " + period.getDays() + " dias";

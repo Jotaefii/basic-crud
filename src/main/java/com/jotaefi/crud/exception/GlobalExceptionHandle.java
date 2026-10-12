@@ -13,6 +13,18 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandle {
 
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponseDTO> HandleBadRequestExcpetion(ConflictException e) {
+        ErrorResponseDTO response = ErrorResponseDTO.builder()
+                .message(e.getMessage())
+                .status(HttpStatus.CONFLICT.value())
+                .errors(Map.of())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponseDTO> HandleBadRequestExcpetion(BadRequestException e) {
         ErrorResponseDTO response = ErrorResponseDTO.builder()

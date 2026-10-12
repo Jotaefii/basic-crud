@@ -6,6 +6,7 @@ import com.jotaefi.crud.dto.response.EmployeeProfileResponseDTO;
 import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.enums.UserStatus;
 import com.jotaefi.crud.service.EmployeeService;
+import com.jotaefi.crud.service.EmployeeUpdateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,7 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final EmployeeUpdateService employeeUpdateService;
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -58,7 +60,7 @@ public class EmployeeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public EmployeeResponseDTO updateEmployee(@RequestBody @Valid EmployeeUpdateDTO employeeUpdateDTO, @PathVariable Long employeeId) {
-        return employeeService.updateEmployee(employeeUpdateDTO, employeeId);
+        return employeeUpdateService.updateAndGetResponse(employeeUpdateDTO, employeeId);
     }
 
     @GetMapping("/status/{status}")
