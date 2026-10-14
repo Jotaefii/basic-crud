@@ -18,7 +18,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
     Page<EmployeeEntity> findByStatusIn(Collection<UserStatus> statuses, Pageable pageable);
 
     @EntityGraph(attributePaths = {"user", "card", "department"})
-    List<EmployeeEntity> findByDepartmentIdAndStatusIn(Long departmentId, Collection<UserStatus> statuses, Sort sort);
+    Page<EmployeeEntity> findByDepartmentIdAndStatusIn(Long departmentId, Collection<UserStatus> statuses, Pageable pageable);
 
     @EntityGraph(attributePaths = {"user", "card", "department"})
     List<EmployeeEntity> findByStatus(UserStatus status, Sort sort);

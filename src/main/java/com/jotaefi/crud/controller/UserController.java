@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AdminProfileResponseDTO> getMyProfile(Authentication authentication) {
         var profile = userService.getMyProfile(authentication.getName());
         return ResponseEntity.ok(profile);

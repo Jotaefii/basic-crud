@@ -101,30 +101,25 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
-    public EmployeeResponseDTO findEmployeeById(Long employeeId) {
-
-        EmployeeEntity employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
-
-        return toResponse(employee);
-    }
-
-    @Transactional(readOnly = true)
-    public List<EmployeeResponseDTO> findByDepartmentId(Long departmentId) {
+    public Page<EmployeeResponseDTO> findByDepartmentId(Long departmentId, Pageable pageable) {
 
         departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException("Departamento não encontrado"));
 
         List<UserStatus> statuses = List.of(UserStatus.ATIVO, UserStatus.FERIAS);
 
-        return employeeRepository.findByDepartmentIdAndStatusIn(departmentId, statuses, Sort.by("user.name"))
-                .stream()
-                .map(this::toResponse)
-                .toList();
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.ASC, "user.name")
+        );
+
+        return employeeRepository.findByDepartmentIdAndStatusIn(departmentId, statuses, sortedPageable)
+               .map(this::toResponse);
     }
 
     @Transactional
-    public void updateEmployee(EmployeeUpdateDTO request, Long employeeId) {
+    public EmployeeResponseDTO updateEmployee(EmployeeUpdateDTO request, Long employeeId) {
         EmployeeEntity employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
 
@@ -149,7 +144,9 @@ public class EmployeeService {
 
                 employee.setStatus(UserStatus.ATIVO);
 
-                employeeRepository.save(employee);
+                employeeRepository.saveAndFlush(employee);
+
+                return toResponse(employee);
 
             } else {
                 throw new EmployeeAlreadyTurnedOffException("Você não pode alterar valores de um funcionário desligado até ele ser ativo novamente.");
@@ -196,7 +193,9 @@ public class EmployeeService {
             employee.setStatus(newStatus);
         }
 
-        employeeRepository.save(employee);
+        employeeRepository.saveAndFlush(employee);
+
+        return toResponse(employee);
     }
 
     @Transactional(readOnly = true)
@@ -228,6 +227,14 @@ public class EmployeeService {
                         new NotFoundException("Funcionário não encontrado"));
 
         return toProfileResponse(employee);
+    }
+
+    // Sendo usado em: > EmployeeUpdateService <
+    protected EmployeeResponseDTO findEmployeeById(Long employeeId) {
+        EmployeeEntity employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
+
+        return toResponse(employee);
     }
 
     private EmployeeProfileResponseDTO toProfileResponse(EmployeeEntity employee) {

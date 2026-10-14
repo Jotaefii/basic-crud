@@ -21,7 +21,7 @@ public class CardsEntity {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal salary;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private EmployeeEntity employee;
 }

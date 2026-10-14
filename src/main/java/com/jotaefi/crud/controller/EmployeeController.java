@@ -30,54 +30,45 @@ public class EmployeeController {
     private final EmployeeUpdateService employeeUpdateService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmployeeResponseDTO> createEmployee(@RequestBody @Valid EmployeeCreateDTO employeeCreateDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.createEmployee(employeeCreateDTO));
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
-    public Page<EmployeeResponseDTO> findAll(Pageable pageable) {
-        return employeeService.findAll(pageable);
-    }
-
-    @GetMapping("/{employeeId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
-    public EmployeeResponseDTO findById(@PathVariable Long employeeId) {
-        return employeeService.findEmployeeById(employeeId);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<EmployeeResponseDTO>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(employeeService.findAll(pageable));
     }
 
     @GetMapping("/department/{departmentId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeResponseDTO> findByDepartmentId(@PathVariable Long departmentId) {
-        return employeeService.findByDepartmentId(departmentId);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<EmployeeResponseDTO>> findByDepartmentId(@PathVariable Long departmentId, Pageable pageable) {
+        return ResponseEntity.ok(employeeService.findByDepartmentId(departmentId, pageable));
     }
 
     @PutMapping("/{employeeId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeResponseDTO updateEmployee(@RequestBody @Valid EmployeeUpdateDTO employeeUpdateDTO, @PathVariable Long employeeId) {
-        return employeeUpdateService.updateAndGetResponse(employeeUpdateDTO, employeeId);
+    public ResponseEntity<EmployeeResponseDTO> updateEmployee(@RequestBody @Valid EmployeeUpdateDTO employeeUpdateDTO, @PathVariable Long employeeId) {
+        return ResponseEntity.ok(employeeUpdateService.updateAndGetResponse(employeeUpdateDTO, employeeId));
     }
 
     @GetMapping("/status/{status}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EmployeeResponseDTO>> findAllByStatus(@PathVariable String status) {
         UserStatus userStatus = UserStatus.fromString(status);
         return ResponseEntity.ok(employeeService.findAllByStatus(userStatus));
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EmployeeResponseDTO>> findByName(@RequestParam String name) {
         return ResponseEntity.ok(employeeService.findByName(name));
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
+    @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<EmployeeProfileResponseDTO> getMyProfile(Authentication authentication) {
         return ResponseEntity.status(HttpStatus.OK).body(employeeService.getMyProfile(authentication.getName()));
     }
