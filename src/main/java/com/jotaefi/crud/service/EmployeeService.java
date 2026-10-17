@@ -215,20 +215,6 @@ public class EmployeeService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public EmployeeProfileResponseDTO getMyProfile(String email) {
-
-        UsersEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new NotFoundException("Usuário não encontrado"));
-
-        EmployeeEntity employee = employeeRepository.findByUserId(user.getId())
-                .orElseThrow(() ->
-                        new NotFoundException("Funcionário não encontrado"));
-
-        return toProfileResponse(employee);
-    }
-
     // Sendo usado em: > EmployeeUpdateService <
     protected EmployeeResponseDTO findEmployeeById(Long employeeId) {
         EmployeeEntity employee = employeeRepository.findById(employeeId)
@@ -236,27 +222,6 @@ public class EmployeeService {
 
         return toResponse(employee);
     }
-
-    private EmployeeProfileResponseDTO toProfileResponse(EmployeeEntity employee) {
-
-        UsersEntity user = employee.getUser();
-        CardsEntity card = employee.getCard();
-
-        Period period = Period.between(user.getRegistrationDate().toLocalDate(), LocalDate.now());
-        String timeAtCompany = period.getYears() + " anos, " + period.getMonths() + " meses e " + period.getDays() + " dias";
-
-        return new EmployeeProfileResponseDTO(
-                employee.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRegistrationDate(),
-                timeAtCompany,
-                employee.getDepartment().getName(),
-                employee.getStatus().name(),
-                card.getSalary()
-        );
-    }
-
 
     private EmployeeResponseDTO toResponse(EmployeeEntity employee) {
 

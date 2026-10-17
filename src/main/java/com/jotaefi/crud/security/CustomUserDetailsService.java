@@ -1,4 +1,4 @@
-package com.jotaefi.crud.service;
+package com.jotaefi.crud.security;
 
 import com.jotaefi.crud.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 

@@ -12,5 +12,5 @@ public record EmployeeProfileResponseDTO(
         String departmentName,
         String status,
         BigDecimal salary
-) {
+) implements ProfileResponse {
 }

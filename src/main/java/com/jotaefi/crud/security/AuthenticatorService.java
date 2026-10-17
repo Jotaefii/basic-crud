@@ -1,6 +1,5 @@
-package com.jotaefi.crud.service;
+package com.jotaefi.crud.security;
 
-import com.jotaefi.crud.config.TokenProvider;
 import com.jotaefi.crud.dto.request.LoginRequestDTO;
 import com.jotaefi.crud.dto.response.TokenResponseDTO;
 import com.jotaefi.crud.exception.BadRequestException;

@@ -8,5 +8,5 @@ public record AdminProfileResponseDTO(
         String email,
         LocalDateTime registrationDate,
         String timeAtCompany
-) {
+) implements ProfileResponse {
 }

@@ -1,4 +1,4 @@
-package com.jotaefi.crud.config;
+package com.jotaefi.crud.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

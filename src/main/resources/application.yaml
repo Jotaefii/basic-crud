@@ -16,5 +16,10 @@ spring:
         format_sql: true
 
 jwt:
-  expiration: ${JWT_EXPIRATION:900000}
+  expiration: ${JWT_EXPIRATION:604800000}
   key: ${JWT_KEY}
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+    operations-sorter: alpha

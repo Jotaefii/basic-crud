@@ -1,6 +1,5 @@
-package com.jotaefi.crud.config;
+package com.jotaefi.crud.security;
 
-import com.jotaefi.crud.service.UserServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +18,7 @@ import java.io.IOException;
 public class JwtAuthenticatorFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private final UserServiceImpl userService;
+    private final CustomUserDetailsService userService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
