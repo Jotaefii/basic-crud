@@ -15,7 +15,6 @@ public record EmployeeResponseDTO(
         String departmentName,
         UserStatus status,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-        LocalDateTime registrationDate,
-        Long version
+        LocalDateTime registrationDate
 ) {
 }

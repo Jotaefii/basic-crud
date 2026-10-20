@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/departments")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Departamentos", description = "Gerenciamento de departamentos")
+@Tag(name = "Departamento", description = "Gerenciamento de departamentos")
 public class DepartmentController {
 
     private final DepartmentService departmentService;

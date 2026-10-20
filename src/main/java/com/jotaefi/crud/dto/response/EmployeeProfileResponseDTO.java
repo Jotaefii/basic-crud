@@ -1,6 +1,5 @@
 package com.jotaefi.crud.dto.response;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record EmployeeProfileResponseDTO(
@@ -11,6 +10,6 @@ public record EmployeeProfileResponseDTO(
         String timeAtCompany,
         String departmentName,
         String status,
-        BigDecimal salary
+        CardSummaryDTO card
 ) implements ProfileResponse {
 }

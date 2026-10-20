@@ -1,11 +1,11 @@
 package com.jotaefi.crud.controller;
 
 import com.jotaefi.crud.dto.request.EmployeeCreateDTO;
+import com.jotaefi.crud.dto.request.EmployeeStatusUpdateDTO;
 import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
 import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.enums.UserStatus;
 import com.jotaefi.crud.service.EmployeeService;
-import com.jotaefi.crud.service.EmployeeUpdateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,11 +26,10 @@ import java.util.List;
 @RequestMapping("/employees")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Funcionários", description = "Gerenciamento de funcionários")
+@Tag(name = "Funcionário", description = "Gerenciamento de funcionários")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
-    private final EmployeeUpdateService employeeUpdateService;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -70,7 +69,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.findByDepartmentId(departmentId, pageable));
     }
 
-    @PutMapping("/{employeeId}")
+    @PatchMapping("/{employeeId}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Atualizar funcionário", description = "Atualiza os dados de um funcionário pelo seu ID.")
@@ -82,19 +81,18 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "Funcionário não encontrado.")
     })
     public ResponseEntity<EmployeeResponseDTO> updateEmployee(@RequestBody @Valid EmployeeUpdateDTO employeeUpdateDTO, @PathVariable Long employeeId) {
-        return ResponseEntity.ok(employeeUpdateService.updateAndGetResponse(employeeUpdateDTO, employeeId));
+        return ResponseEntity.ok(employeeService.updateEmployee(employeeUpdateDTO, employeeId));
     }
 
-    @GetMapping("/status")
+    @GetMapping("/status/{status}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Listar funcionários por status", description = "Retorna todos os funcionários de acordo com seu status.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Funcionários retornados com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos."),
             @ApiResponse(responseCode = "401", description = "Usuário não autenticado."),
-            @ApiResponse(responseCode = "403", description = "Usuário sem permissão de administrador."),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão de administrador.")
     })
-    public ResponseEntity<List<EmployeeResponseDTO>> findAllByStatus(@RequestParam String status) {
+    public ResponseEntity<List<EmployeeResponseDTO>> findAllByStatus(@PathVariable String status) {
         UserStatus userStatus = UserStatus.fromString(status);
         return ResponseEntity.ok(employeeService.findAllByStatus(userStatus));
     }
@@ -104,11 +102,36 @@ public class EmployeeController {
     @Operation(summary = "Listar funcionários por nome", description = "Retorna os funcionários por nome.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Funcionários retornados com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos."),
             @ApiResponse(responseCode = "401", description = "Usuário não autenticado."),
-            @ApiResponse(responseCode = "403", description = "Usuário sem permissão de administrador."),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão de administrador.")
     })
     public ResponseEntity<List<EmployeeResponseDTO>> findByName(@RequestParam String name) {
         return ResponseEntity.ok(employeeService.findByName(name));
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Buscar funcionário", description = "Retorna um funcionário pelo seu ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funcionário retornado com sucesso."),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado."),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão de administrador.")
+    })
+    public ResponseEntity<EmployeeResponseDTO> findEmployeeById(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.findEmployeeById(id));
+    }
+
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Atualizar status", description = "Atualiza o status de um funcionário.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funcionário atualizado com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos."),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado."),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão de administrador."),
+            @ApiResponse(responseCode = "404", description = "Funcionário não encontrado.")
+    })
+    public ResponseEntity<EmployeeResponseDTO> updateStatus(@RequestBody @Valid EmployeeStatusUpdateDTO request, @PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.updateStatusEmployee(request, id));
     }
 }

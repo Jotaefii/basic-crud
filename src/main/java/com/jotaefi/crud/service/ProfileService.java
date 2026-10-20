@@ -1,6 +1,7 @@
 package com.jotaefi.crud.service;
 
 import com.jotaefi.crud.dto.response.AdminProfileResponseDTO;
+import com.jotaefi.crud.dto.response.CardSummaryDTO;
 import com.jotaefi.crud.dto.response.EmployeeProfileResponseDTO;
 import com.jotaefi.crud.dto.response.ProfileResponse;
 import com.jotaefi.crud.entity.EmployeeEntity;
@@ -53,6 +54,14 @@ public class ProfileService {
         EmployeeEntity employee = employeeRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new NotFoundException("Dados do funcionário não encontrado"));
 
+        CardSummaryDTO cardSummary = new CardSummaryDTO(
+                employee.getCard().getId(),
+                employee.getCard().getSalary(),
+                employee.getCard().getFoodAid(),
+                employee.getCard().getTransportationAid(),
+                employee.getCard().getHealthAssistence()
+        );
+
         return new EmployeeProfileResponseDTO(
                 employee.getId(),
                 user.getName(),
@@ -61,7 +70,7 @@ public class ProfileService {
                 timeAtCompany,
                 employee.getDepartment().getName(),
                 employee.getStatus().name(),
-                employee.getCard().getSalary()
+                cardSummary
         );
     }
 }

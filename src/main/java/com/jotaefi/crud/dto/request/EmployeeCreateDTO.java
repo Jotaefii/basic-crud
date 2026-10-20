@@ -1,5 +1,6 @@
 package com.jotaefi.crud.dto.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
@@ -15,11 +16,11 @@ public record EmployeeCreateDTO(
         @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
         String password,
 
-        @NotNull(message = "Salário é obrigatorio")
-        @Positive
-        BigDecimal salary,
-
         @NotNull(message = "Id do departamento é obrigatório")
-        Long departmentId
+        Long departmentId,
+
+        @NotNull(message = "Dados do cartão são obrigatórios")
+        @Valid
+        CardCreateDTO card
 ) {
 }

@@ -1,8 +1,8 @@
 package com.jotaefi.crud.service;
 
 import com.jotaefi.crud.dto.request.EmployeeCreateDTO;
+import com.jotaefi.crud.dto.request.EmployeeStatusUpdateDTO;
 import com.jotaefi.crud.dto.request.EmployeeUpdateDTO;
-import com.jotaefi.crud.dto.response.EmployeeProfileResponseDTO;
 import com.jotaefi.crud.dto.response.EmployeeResponseDTO;
 import com.jotaefi.crud.entity.*;
 import com.jotaefi.crud.enums.UserStatus;
@@ -10,8 +10,6 @@ import com.jotaefi.crud.exception.ConflictException;
 import com.jotaefi.crud.exception.EmployeeAlreadyTurnedOffException;
 import com.jotaefi.crud.exception.NotFoundException;
 import com.jotaefi.crud.repository.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,12 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -40,7 +35,6 @@ public class EmployeeService {
     private final DepartmentRepository departmentRepository;
     private final UserStatusHistoryRepository userStatusHistoryRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final EntityManager entityManager;
 
     @Transactional
     public EmployeeResponseDTO createEmployee(EmployeeCreateDTO request) {
@@ -73,7 +67,10 @@ public class EmployeeService {
         employeeRepository.save(employee);
 
         CardsEntity card = CardsEntity.builder()
-                .salary(request.salary())
+                .salary(request.card().salary())
+                .foodAid(request.card().food())
+                .transportationAid(request.card().transport())
+                .healthAssistence(request.card().health())
                 .employee(employee)
                 .build();
 
@@ -123,36 +120,6 @@ public class EmployeeService {
         EmployeeEntity employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
 
-        if (!Objects.equals(request.version(), employee.getVersion())) {
-            throw new ConflictException("Este funcionário foi alterado por outro usuário. Atualize os dados e tente novamente.");
-        }
-
-        entityManager.lock(employee, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
-
-        if (employee.getStatus() == UserStatus.DESLIGADO) {
-            if (request.status() == UserStatus.ATIVO) {
-
-                UserStatusHistory history = new UserStatusHistory(
-                        null,
-                        employee.getStatus(),
-                        UserStatus.ATIVO,
-                        LocalDateTime.now(),
-                        employee
-                );
-
-                userStatusHistoryRepository.save(history);
-
-                employee.setStatus(UserStatus.ATIVO);
-
-                employeeRepository.saveAndFlush(employee);
-
-                return toResponse(employee);
-
-            } else {
-                throw new EmployeeAlreadyTurnedOffException("Você não pode alterar valores de um funcionário desligado até ele ser ativo novamente.");
-            }
-        }
-
         UsersEntity user = employee.getUser();
 
         if (request.name() != null) {
@@ -166,10 +133,6 @@ public class EmployeeService {
             user.setEmail(request.email());
         }
 
-        if (request.salary() != null) {
-            employee.getCard().setSalary(request.salary());
-        }
-
         if (request.departmentId() != null) {
             DepartmentEntity department = departmentRepository.findById(request.departmentId())
                     .orElseThrow(() -> new NotFoundException("Departamento não encontrado"));
@@ -177,23 +140,7 @@ public class EmployeeService {
             employee.setDepartment(department);
         }
 
-        if (request.status() != null && request.status() != employee.getStatus()) {
-            UserStatus oldStatus = employee.getStatus();
-            UserStatus newStatus = request.status();
-
-            UserStatusHistory history = new UserStatusHistory();
-
-            history.setOldStatus(oldStatus);
-            history.setNewStatus(newStatus);
-            history.setChangeAt(LocalDateTime.now());
-            history.setEmployee(employee);
-
-            userStatusHistoryRepository.save(history);
-
-            employee.setStatus(newStatus);
-        }
-
-        employeeRepository.saveAndFlush(employee);
+        employeeRepository.save(employee);
 
         return toResponse(employee);
     }
@@ -215,10 +162,60 @@ public class EmployeeService {
                 .toList();
     }
 
-    // Sendo usado em: > EmployeeUpdateService <
-    protected EmployeeResponseDTO findEmployeeById(Long employeeId) {
+    @Transactional(readOnly = true)
+    public EmployeeResponseDTO findEmployeeById(Long employeeId) {
         EmployeeEntity employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
+
+        return toResponse(employee);
+    }
+
+    @Transactional(readOnly = true)
+    public EmployeeResponseDTO updateStatusEmployee(EmployeeStatusUpdateDTO request, Long employeeId) {
+        EmployeeEntity employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new NotFoundException("Funcionário não encontrado"));
+
+        if (employee.getStatus() == UserStatus.DESLIGADO) {
+            if (request.status() == UserStatus.ATIVO) {
+
+                UserStatusHistory history = new UserStatusHistory(
+                        null,
+                        employee.getStatus(),
+                        UserStatus.ATIVO,
+                        LocalDateTime.now(),
+                        employee
+                );
+
+                userStatusHistoryRepository.save(history);
+
+                employee.setStatus(UserStatus.ATIVO);
+
+                employeeRepository.save(employee);
+
+                return toResponse(employee);
+
+            } else {
+                throw new EmployeeAlreadyTurnedOffException("Você não pode alterar valores de um funcionário desligado até ele ser ativo novamente.");
+            }
+        }
+
+        if (request.status() != null && request.status() != employee.getStatus()) {
+            UserStatus oldStatus = employee.getStatus();
+            UserStatus newStatus = request.status();
+
+            UserStatusHistory history = new UserStatusHistory();
+
+            history.setOldStatus(oldStatus);
+            history.setNewStatus(newStatus);
+            history.setChangeAt(LocalDateTime.now());
+            history.setEmployee(employee);
+
+            userStatusHistoryRepository.save(history);
+
+            employee.setStatus(newStatus);
+        }
+
+        employeeRepository.save(employee);
 
         return toResponse(employee);
     }
@@ -236,7 +233,6 @@ public class EmployeeService {
                 .departmentName(employee.getDepartment().getName())
                 .status(employee.getStatus())
                 .registrationDate(user.getRegistrationDate())
-                .version(employee.getVersion())
                 .build();
     }
 }
