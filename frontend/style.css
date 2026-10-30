@@ -1,0 +1,103 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(252, 252, 252);
+    min-height: 100vh;
+}
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+h1 {
+    color: rgb(0, 0, 0);
+    font-size: 25px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: blue;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    color: #334155;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+input {
+    outline: none;
+    border-color: #2563eb;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-sizing: border-box;
+
+    /* Animação suave */
+    transition: all 0.3s ease;
+}
+
+/* Efeito ao passar o mouse */
+button:hover {
+    background: #1d4ed8;
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
+    transform: translateY(-2px);
+}
+
+/* Efeito ao clicar */
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.25);
+}
+
+/* Destaque ao navegar pelo teclado */
+button:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 3px;
+}
+
+button {
+    background: #2563eb;
+}
+
+#message {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}
