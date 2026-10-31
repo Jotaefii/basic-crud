@@ -1,13 +1,13 @@
 ```gitignore
 # Maven
-target/
+../target/
 
 # Gradle, caso seja utilizado futuramente
 build/
 .gradle/
 
 # IntelliJ IDEA
-.idea/
+../.idea/
 *.iml
 out/
 
