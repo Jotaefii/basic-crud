@@ -4,78 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="495827a3-abc4-4505-bffd-41cf4bbefefe" name="Changes" comment="adiciona front end ao projeto, tela de login">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mvnw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mvnw.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/CrudApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/CrudApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/config/OpenApiConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/config/OpenApiConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/controller/AuthenticatorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/controller/AuthenticatorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/controller/CardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/controller/CardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/controller/DepartmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/controller/DepartmentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/controller/EmployeeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/controller/EmployeeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/controller/ProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/request/CardCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/request/CardCreateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/request/CardUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/request/CardUpdateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/request/DepartmentCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/request/DepartmentCreateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/request/DepartmentUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/request/DepartmentUpdateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/request/EmployeeCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/request/EmployeeCreateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/request/EmployeeStatusUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/request/EmployeeStatusUpdateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/request/EmployeeUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/request/EmployeeUpdateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/request/LoginRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/request/LoginRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/response/AdminProfileResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/response/AdminProfileResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/response/CardResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/response/CardResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/response/CardSummaryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/response/CardSummaryDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/response/DepartmentResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/response/DepartmentResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/response/EmployeeProfileResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/response/EmployeeProfileResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/response/EmployeeResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/response/EmployeeResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/response/ErrorResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/response/ErrorResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/response/ProfileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/response/ProfileResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/dto/response/TokenResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/dto/response/TokenResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/entity/CardsEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/entity/CardsEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/entity/DepartmentEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/entity/DepartmentEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/entity/EmployeeEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/entity/EmployeeEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/entity/RolesEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/entity/RolesEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/entity/UserStatusHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/entity/UserStatusHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/entity/UsersEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/entity/UsersEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/enums/UserStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/enums/UserStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/exception/BadRequestException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/exception/BadRequestException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/exception/ConflictException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/exception/ConflictException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/exception/EmployeeAlreadyTurnedOffException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/exception/EmployeeAlreadyTurnedOffException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/exception/GlobalExceptionHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/exception/GlobalExceptionHandle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/exception/InvalidStatusException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/exception/InvalidStatusException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/exception/NotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/exception/NotFoundException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/repository/CardRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/repository/CardRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/repository/DepartmentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/repository/DepartmentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/repository/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/repository/EmployeeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/repository/RolesRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/repository/RolesRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/repository/UserStatusHistoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/repository/UserStatusHistoryRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/security/AuthenticatorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/security/AuthenticatorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/security/CustomUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/security/CustomUserDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/security/JwtAuthenticatorFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/security/JwtAuthenticatorFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/security/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/security/TokenProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/service/CardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/service/CardService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/service/DepartmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/service/DepartmentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/service/EmployeeScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/service/EmployeeScheduler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/service/EmployeeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/service/EmployeeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jotaefi/crud/service/ProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/jotaefi/crud/service/ProfileService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V1__create_users.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V1__create_users.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V2__create_roles.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V2__create_roles.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V3__create_users_roles.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V3__create_users_roles.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V4__create_departments.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V4__create_departments.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V5__create_employees.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V5__create_employees.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V6__create_cards.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V6__create_cards.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V7__create_status_history.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V7__create_status_history.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/migration/V8__add_benefits_to_cards.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/migration/V8__add_benefits_to_cards.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/jotaefi/crud/CrudApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/jotaefi/crud/CrudApplicationTests.java" afterDir="false" />
-    </list>
+    <list default="true" id="495827a3-abc4-4505-bffd-41cf4bbefefe" name="Changes" comment="adiciona front end ao projeto, tela de login" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -146,7 +75,7 @@
     "Spring Boot.CrudApplication.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "copilot.chat.legacySessionMetadata.migrated": "true",
-    "git-widget-placeholder": "organização",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/jotaefi/Documentos/java/2026/basic-crud/backend/pom.xml",
     "node.js.detected.package.jshint": "true",
